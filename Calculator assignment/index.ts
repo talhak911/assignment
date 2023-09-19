@@ -2,9 +2,10 @@ import inquirer from "inquirer"
 import chalk from "chalk"
 console.log(chalk.bgBlack.yellow("***Calculator***"));
 
-try{
+
 async function calculate() {
-    let calculate=await inquirer.prompt(
+    try{
+    let input=await inquirer.prompt(
         [
         {
             type: 'number',
@@ -20,43 +21,64 @@ async function calculate() {
         {
             type: 'number',
             name:'num2',
-            message:'Enter 2nd number'
+            message:'Enter 2nd number',
+            validate:(input,answers)=>{
+                if(answers.operator==='/'&&input===0)
+                {
+                throw new Error(chalk.red("Divide by zero not possible"));
+                    
+                }
+                return true
+            }
         }
         ]
 
     )    
-        if (calculate.operator=='/' && calculate.num2==0){
-            throw new Error("Undefined")
-        }
         let result;
-    switch (calculate.operator)
+    switch (input.operator)
     {
         case '+':
-        result=calculate.num1+calculate.num2;
+        result=input.num1+input.num2;
         break;
         case '-':
-        result=calculate.num1-calculate.num2;
+        result=input.num1-input.num2;
         break;
         case '*':
-        result=calculate.num1*calculate.num2;
+        result=input.num1*input.num2;
         break;
         case '/':
-        result=calculate.num1/calculate.num2;
+        result=input.num1/input.num2;
         break;
         case 'mod':
-        result=calculate.num1%calculate.num2;
+        result=input.num1%input.num2;
         break;
         case '^':
-            result=calculate.num1**calculate.num2
-        
+            result=input.num1**input.num2
         break;
     }
     console.log("Result is ",chalk.bgBlack.yellow(result));
     
-}
-calculate();
-}
-catch(error) {
+    let another= await inquirer.prompt(
+        [
+            {
+                type:'list',
+                name:'again',
+                message:'Want to perform another operation',
+                choices:['Yes','No']
+            }
+        ]
+    )   
+    if (another.again==='Yes')
+    {
+        calculate();
+    }
+
+    }
+    catch(error) {
     console.log("Error is ",error);
     
 }
+}
+
+calculate();
+
