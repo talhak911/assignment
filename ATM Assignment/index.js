@@ -10,7 +10,7 @@ class account {
         this.balance = 1000;
         this.transectionHistory = [];
     }
-    async check() {
+    async transection() {
         const option = await inquirer.prompt({
             type: 'list',
             name: 'options',
@@ -20,20 +20,39 @@ class account {
         switch (option.options) {
             case "Check balance":
                 this.checkBalance();
-                console.log(" ");
-                this.check();
                 break;
             case "Withdraw Money":
-                this.withdraw();
-                console.log(" ");
-                this.check();
+                await this.withdraw();
+                break;
+            case "Check transection history":
+                console.log(`Transection history is ${this.transectionHistory} \n\n`);
                 break;
             case "Exit":
                 return;
-                break;
         }
+        this.transection();
     }
     //functions 
+    // Login 
+    async login() {
+        const logon = await inquirer.prompt([
+            { type: 'number',
+                name: 'ID',
+                message: 'Enter your ID' },
+            { type: 'number',
+                name: 'PIN',
+                message: 'Enter your PIN' }
+        ]);
+        if (logon.ID === this.id && logon.PIN === this.pin) {
+            console.log("Log in successful");
+            this.transection();
+        }
+        else {
+            console.log("Invalid ID or Pin ");
+            console.log("Try again");
+            this.login();
+        }
+    }
     checkBalance() {
         console.log(`Your balance is ${this.balance}`);
     }
@@ -47,14 +66,18 @@ class account {
         if (money > this.balance) {
             console.log("insufficiet balance");
         }
+        else if (money < 0) {
+            console.log("Error you entered negative amount");
+        }
         else {
             this.balance -= enter.MoneyToWithdraw;
+            this.transectionHistory.push(`Money withdrawn ${enter.MoneyToWithdraw} and remaining balance is ${this.balance} \n`);
             console.log("Withdraw successful new amount is ", this.balance);
         }
     }
 }
-const user1 = new account(1, 32);
-user1.check();
+const user1 = new account(911, 1122);
+user1.login();
 /*
  User should login by entering his/her unique account number and a secret PIN
 - User can check account balance
