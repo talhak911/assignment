@@ -1,4 +1,5 @@
 import inquirer from "inquirer";
+let userArr = [{ id: "tk", pin: 1 }];
 class account {
     id;
     pin;
@@ -36,7 +37,7 @@ class account {
     // Login 
     async login() {
         const logon = await inquirer.prompt([
-            { type: 'number',
+            { type: 'input',
                 name: 'ID',
                 message: 'Enter your ID' },
             { type: 'number',
@@ -76,8 +77,54 @@ class account {
         }
     }
 }
-const user1 = new account(911, 1122);
-user1.login();
+//class register
+class register {
+    id;
+    pin;
+    constructor(_id, _pin) {
+        this.id = _id;
+        this.pin = _pin;
+    }
+}
+let startAtm = await inquirer.prompt([{
+        type: 'list',
+        name: 'LogOrRegis',
+        message: 'Login or Register',
+        choices: ['Login', 'Register']
+    }]);
+switch (startAtm.LogOrRegis) {
+    case 'Login':
+        const newLogin = await inquirer.prompt([{
+                type: 'input',
+                name: 'ID',
+                message: 'Enter your ID',
+            }, { type: 'number',
+                name: 'PIN',
+                message: 'Enter your PIN' }]);
+        const newlogin1 = new account(newLogin.ID, newLogin.PIN);
+        newlogin1.login();
+        break;
+    case 'Register':
+        const NewPerson = await inquirer.prompt([{
+                type: 'input',
+                name: 'ID',
+                message: 'Enter your ID',
+                validate: (input) => {
+                    for (let i = 0; i < userArr.length; i++) {
+                        if (input === userArr[i].id) {
+                            return 'ID is taken already';
+                        }
+                        return true;
+                    }
+                }
+            }, { type: 'number',
+                name: 'PIN',
+                message: 'Enter your PIN' }]);
+        const newUser = new register(NewPerson.ID, NewPerson.PIN);
+        userArr.push({ id: NewPerson.id, pin: NewPerson.pin });
+}
+// const user1=new account(911,1122)
+// user1.login()
 /*
  User should login by entering his/her unique account number and a secret PIN
 - User can check account balance

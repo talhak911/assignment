@@ -1,4 +1,6 @@
 import inquirer from "inquirer";
+let userArr:{id:string,pin:number}[]=[{id:"tk",pin:1}]
+
 class account{
     private id:string|number;
     private pin:number;
@@ -46,10 +48,10 @@ async transection(){
 //functions 
 
 // Login 
-async login()
+public async login()
 {
 const logon=await inquirer.prompt([
-    {type:'number',
+    {type:'input',
     name:'ID',
     message:'Enter your ID'},
     {type:'number',
@@ -98,8 +100,68 @@ const money=enter.MoneyToWithdraw;
     }
 }
 
-const user1=new account(911,1122)
-user1.login()
+
+//class register
+class register{
+    private id:string|number;
+    private pin: number;
+    constructor(_id:string,_pin:number){
+     
+        this.id=_id;
+        this.pin=_pin;    
+    }
+        
+
+
+    }
+
+
+let startAtm=await inquirer.prompt([{
+    type:'list',
+    name:'LogOrRegis',
+    message:'Login or Register',
+    choices:['Login','Register']
+
+}]);
+switch(startAtm.LogOrRegis){
+    case 'Login':
+        const newLogin=await inquirer.prompt([{
+            type:'input',
+             name:'ID',
+             message:'Enter your ID',
+        },{ type:'number',
+             name:'PIN',
+             message:'Enter your PIN'}])
+ 
+       const newlogin1=new account(newLogin.ID,newLogin.PIN)
+       newlogin1.login()
+        break
+    case 'Register':
+        const NewPerson=await inquirer.prompt([{
+           type:'input',
+            name:'ID',
+            message:'Enter your ID',
+        validate:(input)=>{
+             for(let i=0;i<userArr.length;i++){
+            if(input===userArr[i].id){
+             return 'ID is taken already';
+               
+    }
+    return true     
+            
+        }
+        }},{ type:'number',
+            name:'PIN',
+            message:'Enter your PIN'}])
+
+      const newUser=new register(NewPerson.ID,NewPerson.PIN)
+      userArr.push({ id: NewPerson.id as string, pin: NewPerson.pin });
+      
+}
+
+
+// const user1=new account(911,1122)
+// user1.login()
 
 
 /*
