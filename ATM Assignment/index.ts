@@ -1,5 +1,9 @@
 import inquirer from "inquirer";
-let userArr:{id:string,pin:number}[]=[{id:"tk",pin:1}]
+import chalk from "chalk"
+let userArr:{id:string,pin:number}[]=[{id:"talha",pin:11}]
+userArr.push({id:"tk",pin:911})
+console.log(userArr);
+
 
 class account{
     private id:string|number;
@@ -34,7 +38,9 @@ async transection(){
            this.transection() ;
         break;
         case "Check transection history":
-            console.log(`Transection history is ${this.transectionHistory} \n\n`);
+            this.transectionHistory.forEach((data)=>{console.log("History is ", chalk.yellowBright(data));
+            })
+            //console.log(`Transection history is ${this.transectionHistory} \n`);
             this.transection()
             break;
             
@@ -53,32 +59,13 @@ async transection(){
 // Login 
 public async login()
 {
-// const logon=await inquirer.prompt([
-//     {type:'input',
-//     name:'ID',
-//     message:'Enter your ID'},
-//     {type:'number',
-//     name:'PIN',
-//     message:'Enter your PIN'}
-    
-   
-    
-// ])
-// if(logon.ID===this.id && logon.PIN===this.pin){
-// console.log("Log in successful");
 this.transection()
-// }
-// else {
-//     console.log("Invalid ID or Pin ");
-//     console.log("Try again");
-//     this.login();
-    
-// }
+
 
 }
 
 checkBalance(){
-    console.log(`Your balance is ${this.balance}`);
+    console.log(chalk.green(`Your balance is ${this.balance}`));
     
 }
  async withdraw(){
@@ -91,7 +78,7 @@ const money=enter.MoneyToWithdraw;
     if (money>this.balance)
        { console.log("insufficiet balance")}
     else if (money<0)
-    {console.log("Error you entered negative amount")}
+    {console.log(chalk.red("Error you entered negative amount"))}
     else
     {
         this.balance-=enter.MoneyToWithdraw
@@ -111,7 +98,9 @@ class register{
     constructor(_id:string,_pin:number){
      
         this.id=_id;
-        this.pin=_pin;    
+        this.pin=_pin;
+        userArr.push({ id: _id, pin: _pin });
+        
     }
         
 
@@ -139,22 +128,22 @@ switch(startAtm.LogOrRegis){
              message:'Enter your PIN'}])
         var responsed:boolean=false
              for(let i=0;i<userArr.length;i++){
-                if(newLogin.ID===userArr[i].id && newLogin.PIN==userArr[i].pin){
+                if(String(newLogin.ID) === String(userArr[i].id)&& Number(newLogin.PIN)===userArr[i].pin){
                   console.log("Login successful")
                   const login=new account(newLogin.ID,newLogin.PIN);
                   login.login();
                   var responsed:boolean=true;
                   break;               
         }
-        if (!responsed){console.log("invalid ID or PIN try again")
+        
+
+     }
+     if (!responsed){console.log("invalid ID or PIN try again")
         welcome();
         }
 
-     }
 
 
-    //    const newlogin1=new account(newLogin.ID,newLogin.PIN)
-    //    newlogin1.login()
         break
     case 'Register':
         const NewPerson=await inquirer.prompt([{
@@ -163,38 +152,29 @@ switch(startAtm.LogOrRegis){
             message:'Enter your ID',
         validate:(input)=>{
              for(let i=0;i<userArr.length;i++){
-            if(input===userArr[i].id){
+            if(String(input)===String(userArr[i].id)){
              return 'ID is taken already';
                
     }
-    return true     
-            
+   
         }
+        return true
         }},{ type:'number',
             name:'PIN',
-            message:'Enter your PIN'}])
+            message:'Enter your PIN',
+            validate:(input)=>{
+                if (isNaN(input))
+                {return "Enter numbers only"}
+                return true
+            }}
+        ])
 
       const newUser=new register(NewPerson.ID,NewPerson.PIN)
-      userArr.push({ id: NewPerson.id as string, pin: NewPerson.pin });
-      //const newUserLog=new account(NewPerson.ID,)
+     
+      welcome()
+      break;
       case "Exit":
         return       
 }
 }
 welcome()
-
-// const user1=new account(911,1122)
-// user1.login()
-
-
-/*
- User should login by entering his/her unique account number and a secret PIN
-- User can check account balance 
-- User can withdraw money 
-- User can check his/her previous transections in the current login
-- User should be asked at the end of each function that if he/she wants
-  to end transections or perform any other transections if the user choose
-  more transections he/she must be shown all the options again and he / she can
-  perform any transections.
-
-*/
