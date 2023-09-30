@@ -20,28 +20,31 @@ async transection(){
         type:'list',
         name:'options',
         message:'What do you want to do?',
-        choices:["Check balance","Withdraw Money","Check transection history","Exit"] ///////////////////////////////////////
+        choices:["Check balance","Withdraw Money","Check transection history","Log out"] ///////////////////////////////////////
     })
     switch (option.options){
     case "Check balance":
         this.checkBalance();
-        
+        this.transection()        
         
         break;
 
         case "Withdraw Money":
            await this.withdraw();
+           this.transection() ;
         break;
         case "Check transection history":
             console.log(`Transection history is ${this.transectionHistory} \n\n`);
+            this.transection()
             break;
             
-    case "Exit":
-        return 
+    case "Log out":
+        welcome()
+        break;
         
         
     }
-    this.transection()
+   
 
 }
 
@@ -50,27 +53,27 @@ async transection(){
 // Login 
 public async login()
 {
-const logon=await inquirer.prompt([
-    {type:'input',
-    name:'ID',
-    message:'Enter your ID'},
-    {type:'number',
-    name:'PIN',
-    message:'Enter your PIN'}
+// const logon=await inquirer.prompt([
+//     {type:'input',
+//     name:'ID',
+//     message:'Enter your ID'},
+//     {type:'number',
+//     name:'PIN',
+//     message:'Enter your PIN'}
     
    
     
-])
-if(logon.ID===this.id && logon.PIN===this.pin){
-console.log("Log in successful");
+// ])
+// if(logon.ID===this.id && logon.PIN===this.pin){
+// console.log("Log in successful");
 this.transection()
-}
-else {
-    console.log("Invalid ID or Pin ");
-    console.log("Try again");
-    this.login();
+// }
+// else {
+//     console.log("Invalid ID or Pin ");
+//     console.log("Try again");
+//     this.login();
     
-}
+// }
 
 }
 
@@ -115,12 +118,14 @@ class register{
 
     }
 
-
+async function welcome(){
+    console.log("Welcome to ATM");
+    
 let startAtm=await inquirer.prompt([{
     type:'list',
     name:'LogOrRegis',
     message:'Login or Register',
-    choices:['Login','Register']
+    choices:['Login','Register','Exit']
 
 }]);
 switch(startAtm.LogOrRegis){
@@ -132,9 +137,24 @@ switch(startAtm.LogOrRegis){
         },{ type:'number',
              name:'PIN',
              message:'Enter your PIN'}])
- 
-       const newlogin1=new account(newLogin.ID,newLogin.PIN)
-       newlogin1.login()
+        var responsed:boolean=false
+             for(let i=0;i<userArr.length;i++){
+                if(newLogin.ID===userArr[i].id && newLogin.PIN==userArr[i].pin){
+                  console.log("Login successful")
+                  const login=new account(newLogin.ID,newLogin.PIN);
+                  login.login();
+                  var responsed:boolean=true;
+                  break;               
+        }
+        if (!responsed){console.log("invalid ID or PIN try again")
+        welcome();
+        }
+
+     }
+
+
+    //    const newlogin1=new account(newLogin.ID,newLogin.PIN)
+    //    newlogin1.login()
         break
     case 'Register':
         const NewPerson=await inquirer.prompt([{
@@ -156,9 +176,12 @@ switch(startAtm.LogOrRegis){
 
       const newUser=new register(NewPerson.ID,NewPerson.PIN)
       userArr.push({ id: NewPerson.id as string, pin: NewPerson.pin });
-      
+      //const newUserLog=new account(NewPerson.ID,)
+      case "Exit":
+        return       
 }
-
+}
+welcome()
 
 // const user1=new account(911,1122)
 // user1.login()

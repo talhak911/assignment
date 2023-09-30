@@ -16,43 +16,46 @@ class account {
             type: 'list',
             name: 'options',
             message: 'What do you want to do?',
-            choices: ["Check balance", "Withdraw Money", "Check transection history", "Exit"] ///////////////////////////////////////
+            choices: ["Check balance", "Withdraw Money", "Check transection history", "Log out"] ///////////////////////////////////////
         });
         switch (option.options) {
             case "Check balance":
                 this.checkBalance();
+                this.transection();
                 break;
             case "Withdraw Money":
                 await this.withdraw();
+                this.transection();
                 break;
             case "Check transection history":
                 console.log(`Transection history is ${this.transectionHistory} \n\n`);
+                this.transection();
                 break;
-            case "Exit":
-                return;
+            case "Log out":
+                welcome();
+                break;
         }
-        this.transection();
     }
     //functions 
     // Login 
     async login() {
-        const logon = await inquirer.prompt([
-            { type: 'input',
-                name: 'ID',
-                message: 'Enter your ID' },
-            { type: 'number',
-                name: 'PIN',
-                message: 'Enter your PIN' }
-        ]);
-        if (logon.ID === this.id && logon.PIN === this.pin) {
-            console.log("Log in successful");
-            this.transection();
-        }
-        else {
-            console.log("Invalid ID or Pin ");
-            console.log("Try again");
-            this.login();
-        }
+        // const logon=await inquirer.prompt([
+        //     {type:'input',
+        //     name:'ID',
+        //     message:'Enter your ID'},
+        //     {type:'number',
+        //     name:'PIN',
+        //     message:'Enter your PIN'}
+        // ])
+        // if(logon.ID===this.id && logon.PIN===this.pin){
+        // console.log("Log in successful");
+        this.transection();
+        // }
+        // else {
+        //     console.log("Invalid ID or Pin ");
+        //     console.log("Try again");
+        //     this.login();
+        // }
     }
     checkBalance() {
         console.log(`Your balance is ${this.balance}`);
@@ -86,43 +89,64 @@ class register {
         this.pin = _pin;
     }
 }
-let startAtm = await inquirer.prompt([{
-        type: 'list',
-        name: 'LogOrRegis',
-        message: 'Login or Register',
-        choices: ['Login', 'Register']
-    }]);
-switch (startAtm.LogOrRegis) {
-    case 'Login':
-        const newLogin = await inquirer.prompt([{
-                type: 'input',
-                name: 'ID',
-                message: 'Enter your ID',
-            }, { type: 'number',
-                name: 'PIN',
-                message: 'Enter your PIN' }]);
-        const newlogin1 = new account(newLogin.ID, newLogin.PIN);
-        newlogin1.login();
-        break;
-    case 'Register':
-        const NewPerson = await inquirer.prompt([{
-                type: 'input',
-                name: 'ID',
-                message: 'Enter your ID',
-                validate: (input) => {
-                    for (let i = 0; i < userArr.length; i++) {
-                        if (input === userArr[i].id) {
-                            return 'ID is taken already';
-                        }
-                        return true;
-                    }
+async function welcome() {
+    console.log("Welcome to ATM");
+    let startAtm = await inquirer.prompt([{
+            type: 'list',
+            name: 'LogOrRegis',
+            message: 'Login or Register',
+            choices: ['Login', 'Register', 'Exit']
+        }]);
+    switch (startAtm.LogOrRegis) {
+        case 'Login':
+            const newLogin = await inquirer.prompt([{
+                    type: 'input',
+                    name: 'ID',
+                    message: 'Enter your ID',
+                }, { type: 'number',
+                    name: 'PIN',
+                    message: 'Enter your PIN' }]);
+            var responsed = false;
+            for (let i = 0; i < userArr.length; i++) {
+                if (newLogin.ID === userArr[i].id && newLogin.PIN == userArr[i].pin) {
+                    console.log("Login successful");
+                    const login = new account(newLogin.ID, newLogin.PIN);
+                    login.login();
+                    var responsed = true;
+                    break;
                 }
-            }, { type: 'number',
-                name: 'PIN',
-                message: 'Enter your PIN' }]);
-        const newUser = new register(NewPerson.ID, NewPerson.PIN);
-        userArr.push({ id: NewPerson.id, pin: NewPerson.pin });
+                if (!responsed) {
+                    console.log("invalid ID or PIN try again");
+                    welcome();
+                }
+            }
+            //    const newlogin1=new account(newLogin.ID,newLogin.PIN)
+            //    newlogin1.login()
+            break;
+        case 'Register':
+            const NewPerson = await inquirer.prompt([{
+                    type: 'input',
+                    name: 'ID',
+                    message: 'Enter your ID',
+                    validate: (input) => {
+                        for (let i = 0; i < userArr.length; i++) {
+                            if (input === userArr[i].id) {
+                                return 'ID is taken already';
+                            }
+                            return true;
+                        }
+                    }
+                }, { type: 'number',
+                    name: 'PIN',
+                    message: 'Enter your PIN' }]);
+            const newUser = new register(NewPerson.ID, NewPerson.PIN);
+            userArr.push({ id: NewPerson.id, pin: NewPerson.pin });
+        //const newUserLog=new account(NewPerson.ID,)
+        case "Exit":
+            return;
+    }
 }
+welcome();
 // const user1=new account(911,1122)
 // user1.login()
 /*
