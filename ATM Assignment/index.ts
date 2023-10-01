@@ -82,7 +82,7 @@ const money=enter.MoneyToWithdraw;
     else
     {
         this.balance-=enter.MoneyToWithdraw
-        this.transectionHistory.push(`Money withdrawn ${enter.MoneyToWithdraw} and remaining balance is ${this.balance} \n`)
+        this.transectionHistory.push(`Money withdrawn: ${enter.MoneyToWithdraw} and remaining balance is: ${this.balance} \n`)
         console.log("Withdraw successful new amount is ", this.balance);
         
     }
@@ -108,7 +108,7 @@ class register{
     }
 
 async function welcome(){
-    console.log("Welcome to ATM");
+    console.log(chalk.bold.whiteBright("\n Welcome to ATM\n"));
     
 let startAtm=await inquirer.prompt([{
     type:'list',
@@ -129,7 +129,7 @@ switch(startAtm.LogOrRegis){
         var responsed:boolean=false
              for(let i=0;i<userArr.length;i++){
                 if(String(newLogin.ID) === String(userArr[i].id)&& Number(newLogin.PIN)===userArr[i].pin){
-                  console.log("Login successful")
+                  console.log(chalk.green("Login successful"))
                   const login=new account(newLogin.ID,newLogin.PIN);
                   login.login();
                   var responsed:boolean=true;
@@ -138,7 +138,7 @@ switch(startAtm.LogOrRegis){
         
 
      }
-     if (!responsed){console.log("invalid ID or PIN try again")
+     if (!responsed){console.log(chalk.red("invalid ID or PIN try again \n"))
         welcome();
         }
 
