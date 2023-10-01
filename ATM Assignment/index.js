@@ -3,39 +3,39 @@ import chalk from "chalk";
 let userArr = [{ id: "talha", pin: 11 }];
 userArr.push({ id: "tk", pin: 911 });
 console.log(userArr);
-class account {
+class Account {
     id;
     pin;
     balance;
-    transectionHistory;
+    transactionHistory;
     constructor(id, pin) {
         this.id = id;
         this.pin = pin;
         this.balance = 1000;
-        this.transectionHistory = [];
+        this.transactionHistory = [];
     }
-    async transection() {
+    async transaction() {
         const option = await inquirer.prompt({
             type: 'list',
             name: 'options',
             message: 'What do you want to do?',
-            choices: ["Check balance", "Withdraw Money", "Check transection history", "Log out"] ///////////////////////////////////////
+            choices: ["Check balance", "Withdraw Money", "Check transaction history", "Log out"] ///////////////////////////////////////
         });
         switch (option.options) {
             case "Check balance":
                 this.checkBalance();
-                this.transection();
+                this.transaction();
                 break;
             case "Withdraw Money":
                 await this.withdraw();
-                this.transection();
+                this.transaction();
                 break;
-            case "Check transection history":
-                this.transectionHistory.forEach((data) => {
+            case "Check transaction history":
+                this.transactionHistory.forEach((data) => {
                     console.log("History is ", chalk.yellowBright(data));
                 });
-                //console.log(`Transection history is ${this.transectionHistory} \n`);
-                this.transection();
+                //console.log(`Transection history is ${this.transactionHistory} \n`);
+                this.transaction();
                 break;
             case "Log out":
                 welcome();
@@ -45,7 +45,7 @@ class account {
     //functions 
     // Login 
     async login() {
-        this.transection();
+        this.transaction();
     }
     checkBalance() {
         console.log(chalk.green(`Your balance is ${this.balance}`));
@@ -55,6 +55,9 @@ class account {
             type: 'number',
             name: 'MoneyToWithdraw',
             message: 'How much Money you want to withdraw?',
+            validate: (input) => { if (isNaN(input)) {
+                return 'Enter valid number';
+            } return true; }
         });
         const money = enter.MoneyToWithdraw;
         if (money > this.balance) {
@@ -65,13 +68,13 @@ class account {
         }
         else {
             this.balance -= enter.MoneyToWithdraw;
-            this.transectionHistory.push(`Money withdrawn: ${enter.MoneyToWithdraw} and remaining balance is: ${this.balance} \n`);
+            this.transactionHistory.push(`Money withdrawn: ${enter.MoneyToWithdraw} and remaining balance is: ${this.balance} \n`);
             console.log("Withdraw successful new amount is ", this.balance);
         }
     }
 }
 //class register
-class register {
+class Register {
     id;
     pin;
     constructor(_id, _pin) {
@@ -81,65 +84,70 @@ class register {
     }
 }
 async function welcome() {
-    console.log(chalk.bold.whiteBright("\n Welcome to ATM\n"));
-    let startAtm = await inquirer.prompt([{
-            type: 'list',
-            name: 'LogOrRegis',
-            message: 'Login or Register',
-            choices: ['Login', 'Register', 'Exit']
-        }]);
-    switch (startAtm.LogOrRegis) {
-        case 'Login':
-            const newLogin = await inquirer.prompt([{
-                    type: 'input',
-                    name: 'ID',
-                    message: 'Enter your ID',
-                }, { type: 'number',
-                    name: 'PIN',
-                    message: 'Enter your PIN' }]);
-            var responsed = false;
-            for (let i = 0; i < userArr.length; i++) {
-                if (String(newLogin.ID) === String(userArr[i].id) && Number(newLogin.PIN) === userArr[i].pin) {
-                    console.log(chalk.green("Login successful"));
-                    const login = new account(newLogin.ID, newLogin.PIN);
-                    login.login();
-                    var responsed = true;
-                    break;
-                }
-            }
-            if (!responsed) {
-                console.log(chalk.red("invalid ID or PIN try again \n"));
-                welcome();
-            }
-            break;
-        case 'Register':
-            const NewPerson = await inquirer.prompt([{
-                    type: 'input',
-                    name: 'ID',
-                    message: 'Enter your ID',
-                    validate: (input) => {
-                        for (let i = 0; i < userArr.length; i++) {
-                            if (String(input) === String(userArr[i].id)) {
-                                return 'ID is taken already';
-                            }
-                        }
-                        return true;
+    try {
+        console.log(chalk.bold.whiteBright("\n Welcome to ATM\n"));
+        let startAtm = await inquirer.prompt([{
+                type: 'list',
+                name: 'LogOrRegis',
+                message: 'Login or Register',
+                choices: ['Login', 'Register', 'Exit']
+            }]);
+        switch (startAtm.LogOrRegis) {
+            case 'Login':
+                const newLogin = await inquirer.prompt([{
+                        type: 'input',
+                        name: 'ID',
+                        message: 'Enter your ID',
+                    }, { type: 'number',
+                        name: 'PIN',
+                        message: 'Enter your PIN' }]);
+                var responsed = false;
+                for (let i = 0; i < userArr.length; i++) {
+                    if (String(newLogin.ID) === String(userArr[i].id) && Number(newLogin.PIN) === userArr[i].pin) {
+                        console.log(chalk.green("Login successful"));
+                        const login = new Account(newLogin.ID, newLogin.PIN);
+                        login.login();
+                        var responsed = true;
+                        break;
                     }
-                }, { type: 'number',
-                    name: 'PIN',
-                    message: 'Enter your PIN',
-                    validate: (input) => {
-                        if (isNaN(input)) {
-                            return "Enter numbers only";
+                }
+                if (!responsed) {
+                    console.log(chalk.red("invalid ID or PIN try again \n"));
+                    welcome();
+                }
+                break;
+            case 'Register':
+                const NewPerson = await inquirer.prompt([{
+                        type: 'input',
+                        name: 'ID',
+                        message: 'Enter your ID',
+                        validate: (input) => {
+                            for (let i = 0; i < userArr.length; i++) {
+                                if (String(input) === String(userArr[i].id)) {
+                                    return 'ID is taken already';
+                                }
+                            }
+                            return true;
                         }
-                        return true;
-                    } }
-            ]);
-            const newUser = new register(NewPerson.ID, NewPerson.PIN);
-            welcome();
-            break;
-        case "Exit":
-            return;
+                    }, { type: 'number',
+                        name: 'PIN',
+                        message: 'Enter your PIN',
+                        validate: (input) => {
+                            if (isNaN(input)) {
+                                return "Enter numbers only";
+                            }
+                            return true;
+                        } }
+                ]);
+                const newUser = new Register(NewPerson.ID, NewPerson.PIN);
+                welcome();
+                break;
+            case "Exit":
+                return;
+        }
+    }
+    catch (error) {
+        console.log("Error is ", error);
     }
 }
 welcome();
