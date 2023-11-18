@@ -47,9 +47,39 @@ export default function Home() {
       <h3 style={normalWeight}>Citi is the latest Wall Street business to give a positive prognosis for Web 3.0 and the Metaverse, terms used to depict a future internet vision centred on decentralised technologies and virtual worlds. Citi stated in a March 2022 research paper that the metaverse economy might have a total addressable market of up to $13 trillion and five billion people by 2030.</h3>
       
       <h2 style={headings}><br />The Program in a Nutshell: Earn While You Learn</h2>
-      <h3 style={normalWeight}>In this brand-new type of curriculum, students will learn how to make money and boost exports in the classroom and will begin doing so within six months of the program’s beginning. It resembles a cross between a corporate venture and an educational project.</h3>
-      </div>
+      <h3 style={normalWeight}>In this brand-new type of curriculum, students will learn how to make money and boost exports in the classroom and will begin doing so within six months of the program's beginning. It resembles a cross between a corporate venture and an educational project.</h3>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/0EYseoYwt-c?si=R45XkQTByqJFSzZ0" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+      <video  controls>
+            <source src="/movie.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
 
+          <table style={{marginTop:'100px'}}>
+  <tr>
+    <th>Person 1</th>
+    <th>Person 2</th>
+    <th>Person 3</th>
+  </tr>
+  <tr>
+    <td>Emil</td>
+    <td>Tobias</td>
+    <td>Linus</td>
+  </tr>
+  <tr>
+    <td>16</td>
+    <td>14</td>
+    <td>10</td>
+  </tr>
+</table>
+
+      </div>
+<div className="container">
+  <h2>Contact Us</h2>
+<input type="text"id="fname" name="firstname" placeholder="Your name.." />
+<input type="text"id="email" name="email" placeholder="Your Email.." />
+<input type="text"id="message" name="message" placeholder="Your message" />
+<button className="button">Submit</button>
+</div>
       </body>
   );
 }

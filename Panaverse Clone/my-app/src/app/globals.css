@@ -1,3 +1,20 @@
+
+
+
+
+.container {
+  background: linear-gradient(120deg, #155799, #159957);
+  
+  color: white;
+  padding: 10px 15px;
+ 
+  border-radius: 4px;
+  
+}
+.button {
+  cursor: pointer;
+}
+
 /* @tailwind base;
 @tailwind components;
 @tailwind utilities;
